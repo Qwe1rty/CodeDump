@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class CCC2016QR3R2 {
 
 	public static void main(String[] args) throws Exception {
-		long ctime = System.currentTimeMillis();
 		BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 		String[] nm = input.readLine().split(" ");
 		int n = Integer.parseInt(nm[0]);
@@ -14,8 +13,8 @@ public class CCC2016QR3R2 {
 		ArrayList<Integer[]> redBlocks = new ArrayList<Integer[]>();
 		for (int i = 0; i < m; i++) {
 			String[] srb = input.readLine().split(" ");
-			int[] redBlock = {Integer.parseInt(srb[0]) - 1, Integer.parseInt(srb[1]) - 1};
-			checkSize(redBlock, redBlocks);
+			int[] newRedBlock = {Integer.parseInt(srb[0]) - 1, Integer.parseInt(srb[1]) - 1};
+			checkSize(newRedBlock, redBlocks);
 		}
 		System.out.println(countFilled(n, redBlocks)); // answer
 	}
@@ -34,16 +33,18 @@ public class CCC2016QR3R2 {
 					index = i;
 				}
 			redBlocks.remove(index);			
-			if (prevHeight - (currentCol - prevCol) > 0) count += sqd(prevHeight - (currentCol - prevCol), currentHeight);
-			else count += sqd(0, currentHeight);
+			if (prevHeight - (currentCol - prevCol) > 0) 
+				count += overlapDiff(prevHeight - (currentCol - prevCol), currentHeight);
+			else count += overlapDiff(0, currentHeight);
 			prevHeight = currentHeight;
 			prevCol = currentCol;
 		}
 		return count;
 	}
 	
-	public static long sqd(long n1, long n2) { // smaller, bigger
-		return ((n2 * (n2 + 1)) / 2) - ((n1 * (n1 + 1)) / 2);
+	public static long overlapDiff(long n1, long n2) { // smaller, bigger
+		// this is just the difference for n(n+1)/2 between the two numbers, if n2 >= n1
+		return ((n2 * (n2 + 1)) / 2) - ((n1 * (n1 + 1)) / 2); 
 	}
 
 	// checks if red block is at the top/needed
@@ -56,9 +57,9 @@ public class CCC2016QR3R2 {
 					return;
 				else if (redblock[0] < redBlocks.get(i)[0] && // above
 						redblock[1] <= redBlocks.get(i)[1] && // within left bound
-						redblock[1] >= redBlocks.get(i)[1] + (redblock[0] - redBlocks.get(i)[0])) { // within right bound
+						redblock[1] >= redBlocks.get(i)[1] + (redblock[0] - redBlocks.get(i)[0])) // within right bound
 					redBlocks.remove(i);
-				} else if (redblock[0] == redBlocks.get(i)[0] && redblock[1] == redBlocks.get(i)[1]) return;
+				else if (redblock[0] == redBlocks.get(i)[0] && redblock[1] == redBlocks.get(i)[1]) return;
 		redBlocks.add(new Integer[] {redblock[0], redblock[1]});
 	}
 }
